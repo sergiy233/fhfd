@@ -3,148 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StyleStore - Checkout</title>
+    <title>Оформлення замовлення - StyleStore</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #27ae60; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 0 auto 20px; }
-        .back-link { text-decoration: none; color: var(--primary); font-weight: bold; }
-
-        /* Перемикач мов */
-        .lang-switcher { display: flex; gap: 5px; }
-        .lang-btn { cursor: pointer; border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 5px; }
-        .lang-btn.active { background: var(--primary); color: white; }
-
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding: 20px; color: #333; }
         .checkout-container { max-width: 900px; margin: auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
+        
         @media(max-width: 768px) { .checkout-container { grid-template-columns: 1fr; } }
 
         .box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { margin-top: 0; color: #2c3e50; }
+
+        /* Список товарів */
+        .cart-item { display: flex; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; align-items: center; }
+        .cart-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 5px; }
+        .item-details { flex-grow: 1; }
+        .remove-btn { color: #e74c3c; cursor: pointer; font-size: 0.9em; background: none; border: none; padding: 0; }
+
+        /* Форма */
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 500; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; box-sizing: border-box; }
+        input:focus, select:focus { border-color: #2c3e50; outline: none; }
         
-        .cart-item { display: flex; gap: 10px; border-bottom: 1px solid #eee; padding: 10px 0; align-items: center; }
-        .cart-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        .total-row { display: flex; justify-content: space-between; font-size: 1.2em; font-weight: bold; margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
         
-        .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2em; margin-top: 20px; border-top: 2px solid #eee; padding-top: 10px; }
-        .submit-btn { background: var(--accent); color: white; width: 100%; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .submit-btn { background: #27ae60; color: white; width: 100%; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .submit-btn:hover { background: #219150; }
+        
+        .back-link { display: inline-block; margin-bottom: 20px; color: #2c3e50; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="index.html" class="back-link" id="lang-back">← Назад до магазину</a>
-    <div class="lang-switcher">
-        <button class="lang-btn" id="btn-ua" onclick="changeLang('ua')">UA</button>
-        <button class="lang-btn" id="btn-en" onclick="changeLang('en')">EN</button>
-    </div>
-</header>
+<a href="index.html" class="back-link">← Продовжити покупки</a>
 
 <div class="checkout-container">
     <div class="box">
-        <h2 id="lang-order-title">Оформлення замовлення</h2>
+        <h2>Оформлення замовлення</h2>
         <form id="orderForm" onsubmit="submitOrder(event)">
             <div class="form-group">
-                <label id="lang-label-name">Ваше ім'я *</label>
-                <input type="text" id="input-name" required>
+                <label>Ваше ім'я *</label>
+                <input type="text" required placeholder="Іван Іванов">
             </div>
             <div class="form-group">
-                <label id="lang-label-phone">Телефон *</label>
-                <input type="tel" id="input-phone" required>
+                <label>Телефон *</label>
+                <input type="tel" required placeholder="+380...">
             </div>
             <div class="form-group">
-                <label id="lang-label-city">Місто *</label>
-                <input type="text" id="input-city" required>
+                <label>Email (необов'язково)</label>
+                <input type="email" placeholder="example@mail.com">
             </div>
             <div class="form-group">
-                <label id="lang-label-delivery">Спосіб доставки</label>
-                <select id="select-delivery">
-                    </select>
+                <label>Місто</label>
+                <input type="text" required placeholder="Київ">
             </div>
-            <button class="submit-btn" id="lang-submit">ПІДТВЕРДИТИ ЗАМОВЛЕННЯ</button>
+            
+            <div class="form-group">
+                <label>Спосіб доставки</label>
+                <select id="delivery">
+                    <option value="np">Нова Пошта (відділення)</option>
+                    <option value="ukr">Укрпошта</option>
+                    <option value="courier">Кур'єр до дверей</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Спосіб оплати</label>
+                <select id="payment">
+                    <option value="cod">Післяплата (при отриманні)</option>
+                    <option value="card">Оплата карткою онлайн</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Коментар до замовлення</label>
+                <textarea rows="3"></textarea>
+            </div>
         </form>
     </div>
 
     <div class="box">
-        <h2 id="lang-cart-title">Ваш кошик</h2>
-        <div id="cartList"></div>
+        <h2>Ваш кошик</h2>
+        <div id="cartList">
+            </div>
+        
         <div class="total-row">
-            <span id="lang-total-text">Разом:</span>
+            <span>До сплати:</span>
             <span id="totalSum">0 грн</span>
         </div>
+
+        <button class="submit-btn" onclick="document.getElementById('orderForm').requestSubmit()">ПІДТВЕРДИТИ ЗАМОВЛЕННЯ</button>
     </div>
 </div>
 
 <script>
-    const translations = {
-        ua: {
-            back: "← Назад до магазину",
-            orderTitle: "Оформлення замовлення",
-            cartTitle: "Ваш кошик",
-            name: "Ваше ім'я *",
-            phone: "Телефон *",
-            city: "Місто *",
-            delivery: "Спосіб доставки",
-            deliveryOptions: ["Нова Пошта", "Укрпошта", "Самовивіз"],
-            submit: "ПІДТВЕРДИТИ ЗАМОВЛЕННЯ",
-            total: "Разом:",
-            currency: "грн",
-            empty: "Кошик порожній",
-            success: "Дякуємо! Замовлення оформлено."
-        },
-        en: {
-            back: "← Back to shop",
-            orderTitle: "Checkout",
-            cartTitle: "Your Cart",
-            name: "Your Name *",
-            phone: "Phone Number *",
-            city: "City *",
-            delivery: "Delivery Method",
-            deliveryOptions: ["Nova Poshta", "Ukrposhta", "Pickup"],
-            submit: "CONFIRM ORDER",
-            total: "Total:",
-            currency: "UAH",
-            empty: "Cart is empty",
-            success: "Thank you! Order placed successfully."
-        }
-    };
-
-    function changeLang(lang) {
-        localStorage.setItem('siteLang', lang);
-        
-        // Оновлення активної кнопки
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`btn-${lang}`).classList.add('active');
-
-        // Переклад текстів
-        const t = translations[lang];
-        document.getElementById('lang-back').innerText = t.back;
-        document.getElementById('lang-order-title').innerText = t.orderTitle;
-        document.getElementById('lang-cart-title').innerText = t.cartTitle;
-        document.getElementById('lang-label-name').innerText = t.name;
-        document.getElementById('lang-label-phone').innerText = t.phone;
-        document.getElementById('lang-label-city').innerText = t.city;
-        document.getElementById('lang-label-delivery').innerText = t.delivery;
-        document.getElementById('lang-submit').innerText = t.submit;
-        document.getElementById('lang-total-text').innerText = t.total;
-
-        // Переклад випадаючого списку
-        const select = document.getElementById('select-delivery');
-        select.innerHTML = t.deliveryOptions.map(opt => `<option>${opt}</option>`).join('');
-
-        loadCart(); // Перевантажуємо кошик для зміни валюти
-    }
-
     function loadCart() {
-        const lang = localStorage.getItem('siteLang') || 'ua';
         const cart = JSON.parse(localStorage.getItem('styleCart')) || [];
         const container = document.getElementById('cartList');
         let total = 0;
 
         if(cart.length === 0) {
-            container.innerHTML = `<p>${translations[lang].empty}</p>`;
-            document.getElementById('totalSum').innerText = `0 ${translations[lang].currency}`;
+            container.innerHTML = "<p>Кошик порожній</p>";
+            document.getElementById('totalSum').innerText = "0 грн";
             return;
         }
 
@@ -152,27 +112,34 @@
             total += item.price;
             return `
                 <div class="cart-item">
-                    <img src="${item.img}">
-                    <div style="flex-grow:1"><b>${item.id}</b></div>
-                    <div>${item.price}</div>
-                </div>`;
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="item-details">
+                        <div style="font-weight:600">${item.name}</div>
+                        <div style="color:#777">${item.price} грн</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(${index})">Видалити</button>
+                </div>
+            `;
         }).join('');
-        
-        document.getElementById('totalSum').innerText = `${total} ${translations[lang].currency}`;
+
+        document.getElementById('totalSum').innerText = total + " грн";
+    }
+
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('styleCart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('styleCart', JSON.stringify(cart));
+        loadCart();
     }
 
     function submitOrder(e) {
         e.preventDefault();
-        const lang = localStorage.getItem('siteLang') || 'ua';
-        alert(translations[lang].success);
+        alert("Дякуємо! Ваше замовлення успішно оформлено. Ми надішлемо деталі в SMS.");
         localStorage.removeItem('styleCart');
         window.location.href = "index.html";
     }
 
-    window.onload = () => {
-        const savedLang = localStorage.getItem('siteLang') || 'ua';
-        changeLang(savedLang);
-    };
+    window.onload = loadCart;
 </script>
 
 </body>
