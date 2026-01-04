@@ -1,140 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StyleStore — Accessories Shop</title>
+    <title>StyleStore</title>
     <style>
-        /* Стилі залишаються тими ж самими */
         :root { --primary: #2c3e50; --accent: #d35400; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #333; }
-        header { background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5em; font-weight: bold; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
-        .nav-icons a { margin-left: 15px; text-decoration: none; font-size: 1.2em; position: relative; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); }
+        
+        /* Шапка */
+        header { background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.5em; font-weight: bold; color: var(--primary); }
+
+        /* Перемикач мов */
+        .lang-switcher { display: flex; gap: 5px; }
+        .lang-btn { cursor: pointer; border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .nav-icons a { margin-left: 15px; text-decoration: none; font-size: 1.2em; position: relative; color: var(--primary); }
         .badge { background: var(--accent); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; position: absolute; top: -8px; right: -8px; }
-        .categories { display: flex; gap: 10px; overflow-x: auto; padding: 15px 20px; background: white; border-bottom: 1px solid #eee; }
-        .cat-btn { padding: 8px 20px; border: 1px solid #ddd; border-radius: 20px; text-decoration: none; color: #555; white-space: nowrap; transition: 0.3s; }
-        .cat-btn:hover, .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
         .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 10px; overflow: hidden; position: relative; transition: 0.3s; border: 1px solid #eee; }
-        .card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform: translateY(-5px); }
-        .card-img-wrap { position: relative; height: 280px; background: #f0f0f0; }
-        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .wishlist-btn { position: absolute; top: 10px; right: 10px; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 1.2em; transition: 0.2s; }
-        .wishlist-btn.active { color: red; }
-        .card-body { padding: 15px; text-align: center; }
-        .price-box { margin: 10px 0; font-size: 1.2em; font-weight: bold; color: var(--primary); }
-        .old-price { text-decoration: line-through; color: #999; font-size: 0.8em; margin-right: 8px; }
-        .btn { width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; margin-top: 5px; transition: 0.3s; }
+        
+        /* Картка товару */
+        .card { background: white; border-radius: 10px; overflow: hidden; border: 1px solid #eee; text-align: center; padding-bottom: 15px; }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .price-box { font-weight: bold; margin: 10px 0; font-size: 1.2em; }
+        
+        .btn { width: 90%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; font-weight: bold; }
         .btn-cart { background: var(--primary); color: white; }
-        .btn-cart:hover { background: #1a252f; }
         .btn-oneclick { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
-        .btn-oneclick:hover { background: #f4f4f4; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">StyleStore</div>
+    
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="changeLang('ua', this)">UA</button>
+        <button class="lang-btn" onclick="changeLang('en', this)">EN</button>
+    </div>
+
     <div class="nav-icons">
-        <a href="#">❤️ <span class="badge" id="wishCount">0</span></a>
         <a href="cart.html">🛒 <span class="badge" id="cartCount">0</span></a>
     </div>
 </header>
 
-<div class="categories">
-    <a href="#" class="cat-btn active">All</a>
-    <a href="#" class="cat-btn">Bags</a>
-    <a href="#" class="cat-btn">Glasses</a>
-    <a href="#" class="cat-btn">Watches</a>
-    <a href="#" class="cat-btn">Belts</a>
-</div>
-
 <div class="container">
-    <h2 style="margin-bottom: 20px;">Popular Products</h2>
+    <h2 id="page-title">Популярні товари</h2>
+    
     <div class="grid">
-        
         <div class="card">
-            <div class="card-img-wrap">
-                <div class="wishlist-btn" onclick="toggleWish(this)">♡</div>
-                <img src="images/bag.jpg" alt="Bag">
-            </div>
-            <div class="card-body">
-                <h3>Premium Leather Bag</h3>
-                <div class="price-box">2 500 UAH</div>
-                <button class="btn btn-cart" onclick="addToCart('Leather Bag', 2500, 'images/bag.jpg')">Add to Cart</button>
-                <button class="btn btn-oneclick" onclick="oneClickBuy('Leather Bag')">Buy in 1 Click</button>
-            </div>
+            <img src="images/bag.jpg" alt="Bag">
+            <h3 class="product-name" data-ua="Шкіряна сумка" data-en="Leather Bag">Шкіряна сумка</h3>
+            <div class="price-box">2500 грн</div>
+            <button class="btn btn-cart lang-add-cart" onclick="addToCart('bag', 2500, 'images/bag.jpg')">В кошик</button>
+            <button class="btn btn-oneclick lang-one-click" onclick="oneClickBuy()">Купити в 1 клік</button>
         </div>
 
         <div class="card">
-            <div class="card-img-wrap">
-                <span style="position:absolute; top:10px; left:10px; background:#e74c3c; color:white; padding:3px 8px; border-radius:4px; font-size:0.8em;">SALE</span>
-                <div class="wishlist-btn" onclick="toggleWish(this)">♡</div>
-                <img src="images/glasses.jpg" alt="Glasses">
-            </div>
-            <div class="card-body">
-                <h3>Aviator Sunglasses</h3>
-                <div class="price-box"><span class="old-price">1200 UAH</span> 899 UAH</div>
-                <button class="btn btn-cart" onclick="addToCart('Aviator Sunglasses', 899, 'images/glasses.jpg')">Add to Cart</button>
-                <button class="btn btn-oneclick" onclick="oneClickBuy('Aviator Sunglasses')">Buy in 1 Click</button>
-            </div>
+            <img src="images/glasses.jpg" alt="Glasses">
+            <h3 class="product-name" data-ua="Окуляри Aviator" data-en="Aviator Sunglasses">Окуляри Aviator</h3>
+            <div class="price-box">899 грн</div>
+            <button class="btn btn-cart lang-add-cart" onclick="addToCart('glasses', 899, 'images/glasses.jpg')">В кошик</button>
+            <button class="btn btn-oneclick lang-one-click" onclick="oneClickBuy()">Купити в 1 клік</button>
         </div>
-
-        <div class="card">
-            <div class="card-img-wrap">
-                <div class="wishlist-btn" onclick="toggleWish(this)">♡</div>
-                <img src="images/watch.jpg" alt="Watch">
-            </div>
-            <div class="card-body">
-                <h3>Classic Black Watch</h3>
-                <div class="price-box">4 200 UAH</div>
-                <button class="btn btn-cart" onclick="addToCart('Classic Watch', 4200, 'images/watch.jpg')">Add to Cart</button>
-                <button class="btn btn-oneclick" onclick="oneClickBuy('Classic Watch')">Buy in 1 Click</button>
-            </div>
-        </div>
-
     </div>
 </div>
 
 <script>
-    function addToCart(name, price, img) {
-        let cart = JSON.parse(localStorage.getItem('styleCart')) || [];
-        cart.push({name, price, img, qty: 1});
-        localStorage.setItem('styleCart', JSON.stringify(cart));
-        updateCounts();
-        
-        let btn = event.target;
-        let oldText = btn.innerText;
-        btn.innerText = "✓ Added";
-        btn.style.background = "#27ae60";
-        setTimeout(() => {
-            btn.innerText = oldText;
-            btn.style.background = "";
-        }, 1500);
-    }
-
-    function toggleWish(btn) {
-        btn.classList.toggle('active');
-        btn.innerText = btn.classList.contains('active') ? '❤' : '♡';
-        let current = parseInt(document.getElementById('wishCount').innerText);
-        document.getElementById('wishCount').innerText = btn.classList.contains('active') ? current + 1 : current - 1;
-    }
-
-    function oneClickBuy(productName) {
-        let phone = prompt("Please enter your phone number for quick order of " + productName + ":");
-        if(phone) {
-            alert("Thank you! Our manager will call you at " + phone + " within 10 minutes.");
+    const translations = {
+        ua: {
+            title: "Популярні товари",
+            addCart: "В кошик",
+            oneClick: "Купити в 1 клік",
+            added: "✓ Додано",
+            buyMsg: "Введіть ваш номер телефону:"
+        },
+        en: {
+            title: "Popular Products",
+            addCart: "Add to Cart",
+            oneClick: "Buy in 1 Click",
+            added: "✓ Added",
+            buyMsg: "Enter your phone number:"
         }
+    };
+
+    function changeLang(lang, btn) {
+        // Зміна активної кнопки
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Зберігаємо мову в браузері
+        localStorage.setItem('siteLang', lang);
+
+        // Переклад заголовка
+        document.getElementById('page-title').innerText = translations[lang].title;
+
+        // Переклад назв товарів
+        document.querySelectorAll('.product-name').forEach(el => {
+            el.innerText = el.getAttribute(`data-${lang}`);
+        });
+
+        // Переклад кнопок
+        document.querySelectorAll('.lang-add-cart').forEach(el => el.innerText = translations[lang].addCart);
+        document.querySelectorAll('.lang-one-click').forEach(el => el.innerText = translations[lang].oneClick);
     }
 
-    function updateCounts() {
+    function addToCart(id, price, img) {
+        let lang = localStorage.getItem('siteLang') || 'ua';
+        let cart = JSON.parse(localStorage.getItem('styleCart')) || [];
+        cart.push({id, price, img});
+        localStorage.setItem('styleCart', JSON.stringify(cart));
+        
+        // Оновлення лічильника
+        document.getElementById('cartCount').innerText = cart.length;
+        
+        // Ефект на кнопці
+        let btn = event.target;
+        btn.innerText = translations[lang].added;
+        setTimeout(() => btn.innerText = translations[lang].addCart, 1000);
+    }
+
+    function oneClickBuy() {
+        let lang = localStorage.getItem('siteLang') || 'ua';
+        prompt(translations[lang].buyMsg);
+    }
+
+    // При завантаженні перевіряємо мову
+    window.onload = () => {
+        let savedLang = localStorage.getItem('siteLang') || 'ua';
+        let btn = document.querySelector(`.lang-btn[onclick*="${savedLang}"]`);
+        changeLang(savedLang, btn);
+        
         let cart = JSON.parse(localStorage.getItem('styleCart')) || [];
         document.getElementById('cartCount').innerText = cart.length;
-    }
-
-    window.onload = updateCounts;
+    };
 </script>
 
 </body>
